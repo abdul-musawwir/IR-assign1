@@ -2,6 +2,7 @@
 #include<fstream>
 #include<string>
 #include<map>
+#include<list>
 using namespace std;
 void fileread()
 {
@@ -37,7 +38,15 @@ void PrintMap(Map& m)
 {
     cout << "[ ";
     for (auto &item : m) {
-        cout << item.first << ":" << item.second << " ";
+        cout << item.first << ":[";// << item.second << " ";
+		for (auto &item2 : item.second ) {
+			cout << item2.first << ":{ ";
+			for (auto &item3 : item2.second ) {
+				cout<< item3<<",";
+			}
+			cout<<"}, ";
+		}
+		cout<<"]"<<endl;
     }
     cout << "]\n";
 }
@@ -60,6 +69,12 @@ string cleaner(string uncleaned)
     }
     return uncleaned;
 }
+
+class DocID {
+	public:
+		int DocNo;
+		list<int> posInd;
+};
 // {
 // 	//cout<<uncleaned.size()<<endl;
 // 	for (int i = 0, len = uncleaned.size(); i < len; i++)
@@ -82,24 +97,29 @@ int main()
 	string folder = "./ShortStories/";
 	string ext = ".txt";
 	//string all_of_it;
-	map<string,int> lexicon;
+	map<string, map<int, list<int>>> lexicon;
 
 	for (int i=1; i<=50;i++)
 	{
 		string data;
 		string curr = to_string(i);
 		file.open(folder+curr+ext);
-		cout<<i<<endl;
+		//cout<<i<<endl;
+		int count = 0;
 		while(!file.eof()){
 			file >> data;
 			data = cleaner(data);
-			lexicon[data]++;
+			lexicon[data][i].push_back(count);
+			//lexicon[data]++;
 			//all_of_it.append(data);
 			//cout << data <<endl;
+			count++;
 		}
 		
 		file.close();
 	}
+	lexicon[" "].~map();
+	lexicon.erase(" ");
 	PrintMap(lexicon);
 	cout<<endl<<lexicon.size()<<endl;
 	// cout << all_of_it;
